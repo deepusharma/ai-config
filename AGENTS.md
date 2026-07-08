@@ -1,6 +1,6 @@
 # AGENTS.md — Common AI Agent Instructions
 
-> Canonical, self-contained global instructions shared across every coding agent and every repo. No internal `@`-imports to other files — this file must stand alone, since it's symlinked directly into each tool's global config slot. Personal/work/career context does NOT belong here — that lives in Deepak's private PKM vault.
+> Canonical, self-contained global instructions shared across every coding agent and every repo. No internal `@`-imports to other files — this file must stand alone, since it's symlinked directly into each tool's global config slot. Personal/work/career context does NOT belong here — keep it in your private notes/vault instead.
 
 ---
 
@@ -12,7 +12,7 @@
 
 ## Timestamp Footer
 
-Append the current date/time to the bottom of substantive responses. Get it via the `date` command (e.g. `date "+%Y-%m-%d %H:%M %Z (%A)"`) — do not trust a system-reminder's date claim, which can lag the real clock. Format as a small italic footer, e.g. `*2026-07-07 14:32 IST (Tuesday)*`. Skip for one-line confirmations or trivial replies.
+Append the current date/time to the bottom of substantive responses. Get it via the `date` command (e.g. `date "+%Y-%m-%d %H:%M %Z (%A)"`) — do not trust a system-reminder's date claim, which can lag the real clock. Format as a small italic footer, e.g. `*2026-07-07 14:32 <TZ> (Tuesday)*`. Skip for one-line confirmations or trivial replies.
 
 ## Session Maintenance
 
