@@ -15,7 +15,7 @@ symlink() {
   mkdir -p "$(dirname "$dest")"
   if [[ -e "$dest" && ! -L "$dest" ]]; then
     mkdir -p "$BACKUP"
-    mv "$dest" "$BACKUP/"
+    mv "$dest" "$BACKUP/$(basename "$(dirname "$dest")")-$(basename "$dest")"
     echo "! backed up $dest"
   fi
   ln -sf "$src" "$dest"
