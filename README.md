@@ -8,6 +8,10 @@ Common AI-agent instructions and skills, shared globally across every coding age
 - `skills/` — reusable skills organized by domain (`coding/`, `writing/`, `brainstorming/`, ...), one `SKILL.md` per skill subfolder.
 - `install.sh` — idempotent symlink script.
 
+## Relationship to `dotfiles`
+
+`ai-config` is a sibling of [`dotfiles`](../dotfiles) — same lifecycle (git-tracked, symlinked into place via its own `install.sh`, safe to re-run), same directory level (`~/Documents/GitProjects/public/`), but a different concern: `dotfiles` covers terminal/editor/tool configuration (shell, git, terminal emulators, prompt), while `ai-config` covers AI coding agent configuration (global instructions + skills for Claude Code, opencode, etc.). Kept as two repos rather than one folder inside the other, so each can be cloned, adopted, or shared independently.
+
 ## Install
 
 ```bash
