@@ -18,7 +18,10 @@ symlink() {
     mv "$dest" "$BACKUP/$(basename "$(dirname "$dest")")-$(basename "$dest")"
     echo "! backed up $dest"
   fi
-  ln -sf "$src" "$dest"
+  # Remove an existing link first — `ln -sf` onto a symlinked directory would
+  # create the new link *inside* the target instead of replacing the link
+  [[ -L "$dest" ]] && rm "$dest"
+  ln -s "$src" "$dest"
   echo "ok  linked $dest"
 }
 
