@@ -24,13 +24,20 @@ Safe to re-run. Any existing non-symlink file at a target path is backed up to `
 
 ## Scope
 
-**Automated (v1):** Claude Code, opencode — both expose a plain-file global config (`~/.claude/CLAUDE.md` + `~/.claude/skills/`, `~/.config/opencode/AGENTS.md` + `~/.config/opencode/skills/`), so `install.sh` symlinks directly into them.
+**Automated:** Claude Code, opencode, Codex CLI, Kimchi, Windsurf — all expose a plain-file global config, so `install.sh` symlinks directly into each:
+- Claude Code: `~/.claude/CLAUDE.md` + `~/.claude/skills/`
+- opencode: `~/.config/opencode/AGENTS.md` + `~/.config/opencode/skills/`
+- Codex CLI: `~/.codex/AGENTS.md` (no global skills mechanism — deprecated/undocumented upstream)
+- Kimchi: `~/.config/kimchi/harness/AGENTS.md` + `.../skills/`
+- Windsurf: `~/.codeium/windsurf/global_rules.md` (no distinct global skills mechanism; file has a 6,000-character limit — keep `AGENTS.md` under that)
 
 **Not automated — manual sync only:**
 - **Cursor** — global "User Rules" live inside Cursor's internal settings (not a plain file). Paste the contents of `AGENTS.md` into Settings → Cursor Settings → Rules by hand, and re-paste whenever `AGENTS.md` changes materially.
-- **Devin** — runs in an ephemeral cloud sandbox with no local global config; the equivalent is org-level "Knowledge"/"Playbooks" managed via Devin's web UI. Paste relevant instructions there manually.
+- **Devin** (now the same company as Windsurf, following its acquisition — the cloud-agent product, distinct from the Windsurf IDE app above) — runs in an ephemeral cloud sandbox with no local global config; the equivalent is org-level "Knowledge"/"Playbooks" managed via Devin's web UI. Paste relevant instructions there manually.
+- **Gemini Code Assist** (the VS Code/JetBrains extension — distinct from Antigravity) — no global mechanism found; customization is repo-scoped only (`.gemini/config.yaml`, `.gemini/styleguide.md`) or stored in extension-internal state.
+- **Mistral Vibe** — does not read any workspace/global instruction file at all (confirmed by direct testing) — no mechanism to hook into.
 
-**Not yet wired (occasional/experimental use — add when they become regular):** Codex CLI (`~/.codex/AGENTS.md`), Kimchi (`~/.config/kimchi/harness/AGENTS.md` + `.../skills`), Windsurf (`~/.codeium/windsurf/global_rules.md`, 6,000-character limit). Adding one is a two-line addition to `install.sh`.
+**Not yet wired (mechanism exists, paths need on-machine verification first):** Antigravity (`~/.gemini/AGENTS.md` and/or `~/.gemini/GEMINI.md`, plus a skills directory whose exact path is inconsistent across docs), Zed (`~/.config/zed/AGENTS.md`). Both are plain files in principle — add once the exact paths are confirmed on a real machine.
 
 ## Design rationale
 
