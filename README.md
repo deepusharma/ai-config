@@ -17,7 +17,7 @@ Common AI-agent instructions and skills, shared globally across every coding age
 ```bash
 git clone <repo-url> ~/Documents/GitProjects/public/ai-config
 cd ~/Documents/GitProjects/public/ai-config
-./install.sh
+./install.sh run
 ```
 
 Safe to re-run. Any existing non-symlink file at a target path is backed up to `~/.ai-config_backup_<timestamp>/` before being replaced.

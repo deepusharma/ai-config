@@ -10,6 +10,29 @@
 # on this install (only plugin-internal skill dirs found) — not wired.
 set -euo pipefail
 
+usage() {
+  cat <<'EOF'
+install.sh — wire ai-config's AGENTS.md and skills/ into each AI tool
+
+Usage:
+  ./install.sh          Show this help (default — links nothing)
+  ./install.sh run      Create the symlinks (idempotent, safe to re-run)
+
+What `run` links (AGENTS.md + skills/ where supported):
+  Claude Code (~/.claude), opencode (~/.config/opencode),
+  Codex CLI (~/.codex), Kimchi (~/.config/kimchi/harness),
+  Windsurf (~/.codeium/windsurf), Antigravity (~/.gemini)
+
+Existing non-symlink files are backed up to ~/.ai-config_backup_<timestamp>.
+EOF
+}
+
+case "${1:-}" in
+  run) ;;  # continue into the linking below
+  ""|-h|--help) usage; exit 0 ;;
+  *) echo "Unknown argument: $1"; echo; usage; exit 1 ;;
+esac
+
 AI_CONFIG="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP="$HOME/.ai-config_backup_$(date +%Y%m%d_%H%M%S)"
 
