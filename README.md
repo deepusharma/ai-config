@@ -34,4 +34,8 @@ Safe to re-run. Any existing non-symlink file at a target path is backed up to `
 
 ## Design rationale
 
-Full background, alternatives considered (whole-directory symlinks were rejected — see why), and the per-tool research: see the design doc in the PKM vault, `04-Brainstorming/000.09_ai-config-repo-design.md`.
+**Why per-file symlinks, not whole-directory symlinks:** tool config directories (e.g. `~/.claude`, `~/.codex`, `~/.config/opencode`) mix generic config with sensitive, machine-local state — API credentials, chat history, session transcripts, local caches. Since this repo is public, symlinking a whole tool directory into it would risk committing credentials or private conversation history. Only two known-safe, generic artifacts are ever symlinked: `AGENTS.md` and `skills/`.
+
+**Why Claude Code and opencode only (v1):** not every agent exposes a plain-file global config. Cursor's global "User Rules" live inside its internal settings database, not a file — not symlink-able. Devin runs in an ephemeral cloud sandbox with no local global config at all — its equivalent ("Knowledge"/"Playbooks") is managed via its web UI. Codex CLI, Kimchi, and Windsurf do expose symlink-able global files, but were left unwired in v1 since they're occasional/experimental tools rather than daily drivers — adding one is a two-line addition to `install.sh` (see the comment at the top of that file).
+
+**Why one flat `AGENTS.md` instead of topic files + a trigger table:** the common-instruction set is small today (nomenclature, timestamp footer, session-maintenance). Split into topic files only if it grows unwieldy — premature splitting for a handful of rules isn't worth the added indirection.

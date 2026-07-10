@@ -5,7 +5,7 @@
 # Scope (v1): Claude Code and opencode only — the two tools in active daily/regular use.
 # Codex CLI, Kimchi, Windsurf are intentionally not wired yet (see 000.09 design doc,
 # "Per-tool wiring" section) — add a two-line block per tool here when needed.
-set -e
+set -euo pipefail
 
 AI_CONFIG="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP="$HOME/.ai-config_backup_$(date +%Y%m%d_%H%M%S)"
