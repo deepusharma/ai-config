@@ -15,7 +15,21 @@ Before doing anything in a project — even answering a simple question — read
 ## Instruction File Convention
 
 - `AGENTS.md` is the canonical instruction file for a project. All real content — rules, context, protocol — lives there.
-- `CLAUDE.md`, `GEMINI.md`, and any other agent-specific config file are thin pointers only: `Read \`AGENTS.md\` in this folder and follow it.` Never duplicate content into them — that's how drift happens.
+- `CLAUDE.md`, `GEMINI.md`, and any other agent-specific config file are thin pointers only. Never duplicate content into them — that's how drift happens.
+- **Pointer template** (use this, not a bare one-liner):
+  ```
+  # <FILENAME>
+
+  All agent instructions for this repository live in [AGENTS.md](AGENTS.md).
+  The line below imports it via Claude Code's `@` syntax:
+
+  @AGENTS.md
+
+  > **Fallback — do not skip:** if your harness did not automatically load the
+  > `@AGENTS.md` import above, read `AGENTS.md` now, before doing anything else
+  > here. It contains the real rules, structure, and conventions.
+  ```
+  The `@AGENTS.md` line auto-expands in Claude Code specifically. For any other tool, it's harmless — either ignored as plain text or (if that tool has its own import syntax) it works the same way — and the fallback line covers the case where nothing auto-loads it. Strictly safer than a bare pointer, never worse.
 - This applies at the project level the same way it applies globally here: one instruction file, referenced everywhere, never copy-pasted.
 - **Pointers are literal text, not symlinks, inside any git-tracked project repo.** Symlinks are only used for machine-global config slots (what `install.sh` sets up under `~/.claude`, `~/.codex`, etc.) — those live outside any repo, so portability/rendering don't matter. A project's own `CLAUDE.md`/`GEMINI.md` must render as real content on GitHub and survive a plain clone or zip export, which a symlink doesn't reliably do. See `docs/adr/0001-instruction-pointers-not-symlinks.md` for the reasoning.
 
