@@ -4,11 +4,82 @@
 
 ---
 
+## Read Instructions Fully
+
+Before doing anything in a project — even answering a simple question — read that project's instruction file completely. Do not skim or stop at the first section that seems relevant.
+
+- If the project has an `AGENTS.md`, read the whole thing. If `CLAUDE.md`/`GEMINI.md`/etc. are thin pointers to it (see below), follow the pointer and read the real file, not just the pointer.
+- If that file defines a session-start protocol (state files to read, chat/session naming, an announcement to output first), execute those steps before responding to anything else — don't answer the user's question first and catch up on protocol afterward.
+- Missing a mandatory step because it was buried past the first section is a protocol violation, not a reasonable shortcut.
+
+## Instruction File Convention
+
+- `AGENTS.md` is the canonical instruction file for a project. All real content — rules, context, protocol — lives there.
+- `CLAUDE.md`, `GEMINI.md`, and any other agent-specific config file are thin pointers only: `Read \`AGENTS.md\` in this folder and follow it.` Never duplicate content into them — that's how drift happens.
+- This applies at the project level the same way it applies globally here: one instruction file, referenced everywhere, never copy-pasted.
+- **Pointers are literal text, not symlinks, inside any git-tracked project repo.** Symlinks are only used for machine-global config slots (what `install.sh` sets up under `~/.claude`, `~/.codex`, etc.) — those live outside any repo, so portability/rendering don't matter. A project's own `CLAUDE.md`/`GEMINI.md` must render as real content on GitHub and survive a plain clone or zip export, which a symlink doesn't reliably do. See `docs/adr/0001-instruction-pointers-not-symlinks.md` for the reasoning.
+
+## Path References
+
+Within a single project, reference that project's own files with relative paths (e.g. `session-notes/NEXT-SESSION.md`, not an absolute path into the same repo) — keeps instructions portable across clones and machines. Absolute (or `~`-relative) paths are for genuinely external references only: another repo, the vault, a location outside the current project.
+
+## Session Protocol (Opt-In Template)
+
+For any project that wants a consistent session-start/closure ritual instead of inventing its own each time. A project opts in with a short block in its own `AGENTS.md`:
+
+> Uses the ai-config session protocol. State file: `<relative-path>`. Naming prefix: `<ProjectName>`.
+
+**Session start — mandatory, before answering anything:**
+1. Read the project's `AGENTS.md` (already required above) and its state file.
+2. Output exactly: `📋 Context loaded: [files read]`
+3. Ask for a session name: *"Session name? (e.g. '<prefix> - 02'). Skip to proceed unnamed."* — must appear right after the 📋 line, before answering the user's actual question.
+
+**Closure rules:**
+- **Compressed context:** if the conversation shows a compression summary, say so and don't proceed until acknowledged: `⚠️ This conversation has compressed context. Responses may be less reliable. Start a new chat to avoid context degradation. Use /clear or open a new session.`
+- **Closed chat:** if the user already said something like "close this chat" / "moving to new chat" earlier, and then asks a follow-up, don't answer it — reply only: `⚠️ You closed this chat. Start a new session to keep context clean. Use /clear or open a new session.`
+- **Wrap-up starter prompt:** when the user signals the session is ending ("wrapping up", "that's all for today", etc.), generate a ready-to-paste starter prompt before any closure message, as a fenced code block, first line = next session name (`<prefix> - NN`, incremented, or a descriptive name + `- 01` if this one was unnamed):
+  ```
+  [next session name]
+
+  Continuing from [current session name]:
+
+  Completed:
+  - [bullet]
+
+  Pending:
+  - [item or "None"]
+
+  Suggested first task:
+  [one specific task]
+  ```
+  Don't duplicate if one was already given earlier in the same session.
+
+A project's own `AGENTS.md` may layer extra steps on top of this template (e.g. creating a per-chat file, a transcript symlink) — the template covers the common core, not every project's specific extras.
+
+## State Files — Federated, Not Centralized
+
+State lives at two levels, and they don't duplicate each other:
+
+- **Top-level index** (e.g. the vault's own `Session-State.md`): a compact, cross-project list — one line per active project, pending items only, linking out to where the real detail lives. Stays short by design; if it's growing because one project's detail is leaking into it, that detail belongs one level down instead.
+- **Project-level state file**: the actual pending items, recent decisions, and open threads for that one project. This is what the Session Protocol template's "state file" parameter points to.
+
+New projects should name their state file `Session-State.md` (Title-Case-With-Hyphens — matching the vault's own precedent-setting file, not the all-caps `README.md`/`AGENTS.md` convention, which is for true root-level meta-files, not regular tracked docs). Don't rename existing state files that predate this convention (e.g. a vault file in active use, or one another tool's tooling depends on by exact name) purely for consistency — the churn and break risk isn't worth it for a naming preference. Apply the convention going forward, not retroactively.
+
+## ADRs — Where They Live
+
+Architecture decisions that affect the shared instruction system itself (naming conventions, file structure, protocol design — decisions that apply "to every project") get an ADR here, in `ai-config/docs/adr/`.
+
+A decision specific to one project (why it picked a particular tool, a particular data layout) can get its own ADR in that project's own `docs/adr/`, using the same `NNNN-title.md` numbering convention, numbered independently per repo. Don't route project-specific decisions through `ai-config` just because the pattern originated here — only genuinely cross-project decisions belong in the shared one.
+
 ## Nomenclature
 
 - File and directory names: kebab-case (`my-skill-name`, not `MySkillName` or `my_skill_name`).
 - Dates in filenames: ISO 8601, `YYYY-MM-DD`.
 - Skill directories follow: `skills/<domain>/<skill-name>/SKILL.md`.
+
+## Communication
+
+- Refer to the user with he/him pronouns. Never substitute singular "they."
 
 ## Timestamp Footer
 
