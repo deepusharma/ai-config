@@ -71,7 +71,7 @@ A project can declare two optional parameters without opting out of anything:
 
 > Session state file: `<relative-path>`. Naming prefix: `<ProjectName>`.
 
-If a project hasn't declared a state file (predates this convention, or genuinely has none yet), don't treat that as an opt-out — just skip the "read the state file" half of step 1 below and proceed with the rest. If no naming prefix is declared, use free-form descriptive session names instead of `<prefix> - NN`.
+Every project needs *some* declared "what's next" mechanism — a state file, or an explicitly-named alternative (e.g. "Tracked via GitHub Issues, no local state file" or "See 'Current Milestone' section above"). Silent absence isn't acceptable; an unexamined gap is exactly what this is meant to prevent. If a project genuinely hasn't decided yet, say that explicitly too, rather than leaving it unaddressed. If no naming prefix is declared, use free-form descriptive session names instead of `<prefix> - NN`.
 
 **Session start — mandatory, before answering anything:**
 1. Read the project's `AGENTS.md` (already required above) and its state file, if one is declared.
@@ -106,6 +106,8 @@ State lives at two levels, and they don't duplicate each other:
 
 - **Top-level index** (e.g. the vault's own `Session-State.md`): a compact, cross-project list — one line per active project, pending items only, linking out to where the real detail lives. Stays short by design; if it's growing because one project's detail is leaking into it, that detail belongs one level down instead.
 - **Project-level state file**: the actual pending items, recent decisions, and open threads for that one project. This is what the Session Protocol template's "state file" parameter points to.
+
+**Every project needs one of these, or an explicitly-named alternative** — a state file, GitHub Issues, a milestone/roadmap section in the project's own `AGENTS.md`, whatever fits. The point isn't the specific mechanism, it's that "what's next" always has a documented answer instead of living only in someone's head or an old chat.
 
 New projects should name their state file `Session-State.md` (Title-Case-With-Hyphens — matching the vault's own precedent-setting file, not the all-caps `README.md`/`AGENTS.md` convention, which is for true root-level meta-files, not regular tracked docs). Don't rename existing state files that predate this convention (e.g. a vault file in active use, or one another tool's tooling depends on by exact name) purely for consistency — the churn and break risk isn't worth it for a naming preference. Apply the convention going forward, not retroactively.
 
