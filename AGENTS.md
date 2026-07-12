@@ -121,6 +121,13 @@ A decision specific to one project (why it picked a particular tool, a particula
 - Dates in filenames: ISO 8601, `YYYY-MM-DD`.
 - Skill directories follow: `skills/<domain>/<skill-name>/SKILL.md`.
 
+## Default Naming Conventions (Code)
+
+Defaults for common languages, for any project that doesn't define its own more specific naming rules in its Coding Standards section. Override there if a project needs something different — don't restate these defaults verbatim when they already apply as-is.
+
+- **Python:** `snake_case` for functions/variables, `PascalCase` for classes, `UPPER_CASE` for constants.
+- **TypeScript/JavaScript:** `camelCase` for functions/variables, `PascalCase` for classes/components/interfaces.
+
 ## Communication
 
 - Refer to the user with he/him pronouns. Never substitute singular "they."
@@ -128,6 +135,15 @@ A decision specific to one project (why it picked a particular tool, a particula
 ## Timestamp Footer
 
 Append the current date/time to the bottom of substantive responses. Get it via the `date` command (e.g. `date "+%Y-%m-%d %H:%M %Z (%A)"`) — do not trust a system-reminder's date claim, which can lag the real clock. Format as a small italic footer, e.g. `*2026-07-07 14:32 <TZ> (Tuesday)*`. Skip for one-line confirmations or trivial replies.
+
+## Default Git Workflow
+
+Defaults for any project that doesn't define its own more specific Git Workflow section — override there if a project needs something different (e.g. a stricter commit format, a specific PR-approval requirement).
+
+- **Branch naming:** `feature/description`, `fix/description`, `chore/description`, `test/description`.
+- **Commit format:** Conventional commits — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+- **Pushing:** Prefer a feature branch + PR over a direct push to main/master, even when the branch isn't protected — it's the safer default regardless of what's actually configured on GitHub. Whether a branch enforces PR-only changes is a per-repo GitHub setting, not something this file can guarantee — check, don't assume.
+- **If a direct push is rejected due to branch protection: never force past it or bypass the check.** Push the commits to a new branch and open a PR instead.
 
 ## Session Maintenance
 
