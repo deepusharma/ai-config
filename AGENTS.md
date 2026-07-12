@@ -19,18 +19,62 @@ Before doing anything in a project — even answering a simple question — read
 - This applies at the project level the same way it applies globally here: one instruction file, referenced everywhere, never copy-pasted.
 - **Pointers are literal text, not symlinks, inside any git-tracked project repo.** Symlinks are only used for machine-global config slots (what `install.sh` sets up under `~/.claude`, `~/.codex`, etc.) — those live outside any repo, so portability/rendering don't matter. A project's own `CLAUDE.md`/`GEMINI.md` must render as real content on GitHub and survive a plain clone or zip export, which a symlink doesn't reliably do. See `docs/adr/0001-instruction-pointers-not-symlinks.md` for the reasoning.
 
+## AGENTS.md Template
+
+Use this skeleton whenever creating a project's `AGENTS.md` from scratch, or substantially restructuring an existing one. Keep the section names and order — that's what makes moving between projects predictable. Sections marked "if applicable" can be dropped when a project genuinely has no such concern (a docs-only repo doesn't need Testing Rules); content under each section is entirely project-specific.
+
+```
+# AGENTS.md — <Project>
+One line: what this is; note that CLAUDE.md/GEMINI.md are pointers to this file.
+
+## Project Overview
+What it is, in 2-4 sentences. Key constraints if any (deployment tier, quotas, single-user, etc.)
+
+## Tech Stack
+Languages, frameworks, key dependencies. Verify version claims against the actual
+lockfile/package manifest before writing them down — don't guess (a stale or guessed
+version number is worse than no version number).
+
+## Dev Commands / Getting Started   (if applicable)
+Install, run, test, build.
+
+## Coding Standards   (if applicable)
+File/function size limits, naming conventions, per-language subsections.
+
+## Git Workflow   (if applicable)
+Branch naming, commit format, PR requirements.
+
+## Testing Rules   (if applicable)
+Coverage requirements, mocking rules, test types.
+
+## [Project-Specific Sections]
+Whatever doesn't fit above: milestone/sprint tracking, a domain-specific comparison
+table, architecture patterns, specialized workflows. No fixed shape — this is where
+a project's actual personality lives. Don't force it into the categories above.
+
+## Session Protocol
+State file and naming-prefix declaration (see "Session Protocol" below), or an
+explicit opt-out with a reason.
+```
+
 ## Path References
 
 Within a single project, reference that project's own files with relative paths (e.g. `session-notes/NEXT-SESSION.md`, not an absolute path into the same repo) — keeps instructions portable across clones and machines. Absolute (or `~`-relative) paths are for genuinely external references only: another repo, the vault, a location outside the current project.
 
-## Session Protocol (Opt-In Template)
+## Session Protocol (Default — Opt-Out Must Be Explicit)
 
-For any project that wants a consistent session-start/closure ritual instead of inventing its own each time. A project opts in with a short block in its own `AGENTS.md`:
+This protocol applies to every project by default. A project does not need to declare anything to get it — silence means it's active. To skip it, a project's `AGENTS.md` must say so explicitly, with a reason:
 
-> Uses the ai-config session protocol. State file: `<relative-path>`. Naming prefix: `<ProjectName>`.
+> Opts out of the ai-config session protocol — `<reason, e.g. "throwaway script, no session continuity needed">`.
+
+A project can declare two optional parameters without opting out of anything:
+
+> Session state file: `<relative-path>`. Naming prefix: `<ProjectName>`.
+
+If a project hasn't declared a state file (predates this convention, or genuinely has none yet), don't treat that as an opt-out — just skip the "read the state file" half of step 1 below and proceed with the rest. If no naming prefix is declared, use free-form descriptive session names instead of `<prefix> - NN`.
 
 **Session start — mandatory, before answering anything:**
-1. Read the project's `AGENTS.md` (already required above) and its state file.
+1. Read the project's `AGENTS.md` (already required above) and its state file, if one is declared.
 2. Output exactly: `📋 Context loaded: [files read]`
 3. Ask for a session name: *"Session name? (e.g. '<prefix> - 02'). Skip to proceed unnamed."* — must appear right after the 📋 line, before answering the user's actual question.
 
