@@ -123,6 +123,8 @@ State lives at two levels, and they don't duplicate each other:
 
 **Every project needs one of these, or an explicitly-named alternative** — a state file, GitHub Issues, a milestone/roadmap section in the project's own `AGENTS.md`, whatever fits. The point isn't the specific mechanism, it's that "what's next" always has a documented answer instead of living only in someone's head or an old chat.
 
+**Keep it current as you go, not only at the bookends.** Update the relevant state file immediately after a completed step, a decision, or a plan change — not only when explicitly asked to reconcile, and not only when a session closes cleanly. The Session Protocol's closure rules capture a wrap-up prompt when a session visibly ends, but a session that just trails off (closed laptop, switched task, no "wrapping up" signal) leaves nothing behind unless the state file was already kept current. Treat every substantive step as a trigger to write, not just the two bookends.
+
 New projects should name their state file `Session-State.md` (Title-Case-With-Hyphens — matching the vault's own precedent-setting file, not the all-caps `README.md`/`AGENTS.md` convention, which is for true root-level meta-files, not regular tracked docs). Don't rename existing state files that predate this convention (e.g. a vault file in active use, or one another tool's tooling depends on by exact name) purely for consistency — the churn and break risk isn't worth it for a naming preference. Apply the convention going forward, not retroactively.
 
 ## ADRs — Where They Live
