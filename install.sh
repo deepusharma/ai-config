@@ -36,23 +36,60 @@ esac
 AI_CONFIG="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP="$HOME/.ai-config_backup_$(date +%Y%m%d_%H%M%S)"
 
+# Windows (Git Bash / MSYS): `ln -s` silently makes a *copy* unless native symlinks are
+# requested. Needs Developer Mode on (Settings -> System -> For developers) or an elevated
+# shell. Force native links and fail loudly rather than quietly copying files.
+IS_WINDOWS=0
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) IS_WINDOWS=1; export MSYS=winsymlinks:nativestrict ;;
+esac
+
 symlink() {
   local src="$1" dest="$2"
+  # On Windows only wire tools that are actually installed (their config dir already
+  # exists) — don't create ~/.config/opencode etc. for tools that aren't there.
+  if [[ $IS_WINDOWS -eq 1 && ! -d "$(dirname "$dest")" ]]; then
+    echo "--  skipped $dest (tool not installed on this machine)"
+    return 0
+  fi
   mkdir -p "$(dirname "$dest")"
   if [[ -e "$dest" && ! -L "$dest" ]]; then
     mkdir -p "$BACKUP"
     mv "$dest" "$BACKUP/$(basename "$(dirname "$dest")")-$(basename "$dest")"
     echo "! backed up $dest"
   fi
-  # Remove an existing link first â€” `ln -sf` onto a symlinked directory would
+  # Remove an existing link first — `ln -sf` onto a symlinked directory would
   # create the new link *inside* the target instead of replacing the link
   [[ -L "$dest" ]] && rm "$dest"
   ln -s "$src" "$dest"
+  if [[ ! -L "$dest" ]]; then
+    echo "ERROR: $dest is not a symlink (copy made instead). On Windows enable Developer Mode or run elevated." >&2
+    exit 1
+  fi
   echo "ok  linked $dest"
 }
 
+# Link the skills/ directory. Normally the whole directory is symlinked. But if the target is
+# a real directory holding Claude-managed content (a `synced/` subfolder, created by the
+# Claude app for account-synced skills), replacing it would hide that content — so link each
+# skill (skills/<domain>/<skill-name>/ containing SKILL.md) individually into it instead.
+link_skills() {
+  local dest="$1"
+  if [[ -d "$dest" && ! -L "$dest" && -e "$dest/synced" ]]; then
+    local n=0 skill
+    for skill in "$AI_CONFIG"/skills/*/*/; do
+      [[ -f "${skill}SKILL.md" ]] || continue
+      symlink "${skill%/}" "$dest/$(basename "$skill")"
+      n=$((n+1))
+    done
+    echo "ok  $dest holds Claude-managed synced/ — linked $n skill(s) individually, directory left in place"
+  else
+    symlink "$AI_CONFIG/skills" "$dest"
+  fi
+}
+
 symlink "$AI_CONFIG/AGENTS.md" ~/.claude/CLAUDE.md
-symlink "$AI_CONFIG/skills"    ~/.claude/skills
+link_skills ~/.claude/skills
 
 symlink "$AI_CONFIG/AGENTS.md" ~/.config/opencode/AGENTS.md
 symlink "$AI_CONFIG/skills"    ~/.config/opencode/skills
