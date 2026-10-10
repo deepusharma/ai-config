@@ -133,6 +133,10 @@ Architecture decisions that affect the shared instruction system itself (naming 
 
 A decision specific to one project (why it picked a particular tool, a particular data layout) can get its own ADR in that project's own `docs/adr/`, using the same `NNNN-title.md` numbering convention, numbered independently per repo. Don't route project-specific decisions through `ai-config` just because the pattern originated here — only genuinely cross-project decisions belong in the shared one.
 
+## Code Folder Layout
+
+On every machine that holds code, repos live at `~/Documents/GitProjects/{public,lab,personal}/<repo>` (`~` resolves per environment: Mac home, WSL home, Windows user profile). Not every repo is cloned everywhere, but the folder *shape* stays identical so docs, scripts, and agent instructions can use one path convention. Never hardcode machine-specific absolute paths (`/home/<user>/...`, `/Users/<user>/...`, `/mnt/d/...`) into shared repos — use `~`-relative paths. On Windows, code repos live in WSL; native-Windows clones are limited to repos a Windows-native tool needs (e.g. this one and `dotfiles`). Keep multiple clones of the same repo on different machines in sync with `git pull --rebase` (set `pull.rebase=true` and `rebase.autoStash=true`) rather than merge commits.
+
 ## Nomenclature
 
 - File and directory names: kebab-case (`my-skill-name`, not `MySkillName` or `my_skill_name`).
