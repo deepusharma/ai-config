@@ -1,3 +1,7 @@
 .DS_Store
 *.swp
 .idea/
+
+# Claude app skill sync writes here via the ~/.claude/skills symlink
+skills/synced/
+skills/.trash/
