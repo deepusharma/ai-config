@@ -22,6 +22,10 @@ cd ~/Documents/GitProjects/public/ai-config
 
 Safe to re-run. Any existing non-symlink file at a target path is backed up to `~/.ai-config_backup_<timestamp>/` before being replaced.
 
+### Windows (Git Bash)
+
+Run `./install.sh run` from Git Bash. It needs **Developer Mode** on (Settings -> System -> For developers) or an elevated shell — the script exports `MSYS=winsymlinks:nativestrict` so links are real symlinks, and aborts if a copy would be made instead. Targets for tools that aren't installed (their config dir doesn't exist) are skipped. If `~/.claude/skills` is a real directory containing Claude-managed `synced/`, skills are linked individually into it rather than replacing the directory. WSL is a separate environment with its own `~/.claude` — run the script there too.
+
 ## Scope
 
 **Automated:** Claude Code, opencode, Codex CLI, Kimchi, Windsurf, Antigravity — all expose a plain-file global config, so `install.sh` symlinks directly into each:
